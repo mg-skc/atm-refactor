@@ -24,8 +24,11 @@
         <button onclick="displayWithrawal()">Withdrawal</button>
 
         <button onclick="displayDeposit()">Deposit</button>
-       
+
+        <button onclick="displayChangePin()">Change Pin</button>
+
         <button onclick="returnToMenu()">Logout</button>
+
     </div>
 
     <script>
@@ -40,6 +43,13 @@
         /*----------- the code to manipute data/ logic goes here --------*/ 
         function Atm() {
             this.accounts = [];
+            //[Account, Account, Account]
+            /* Account { 
+                pin : 1283
+                balance: 0
+                deposit : function
+                withdrawal : function
+             } */ 
             this.currentAccount = null; 
         
             this.createAccount = function (pin){
@@ -64,6 +74,7 @@
         }
 
         function Account(pin) { 
+            //let this = {};
             this.pin = pin;
             this.balance = 0;
 
@@ -79,6 +90,13 @@
                 updateATM(); 
             }
 
+            //change pin
+            this.changePin = function(newPin){
+                //update this.pin
+            }
+
+            //return this; 
+
         }
 
         function updateATM(){ 
@@ -93,9 +111,6 @@
             /* clear the fields in the menu */ 
             document.getElementById("balance").innerHTML = null;
 
-            /* clear current account */ 
-            atm.currentAccount = null; 
-
             /* hide the menu and display the login */ 
             document.getElementById("menu").style.display = "none";
             document.getElementById("start").style.display = "block";
@@ -108,8 +123,17 @@
         }
 
         function displayWithrawal() {
+            //get the amount to withdrawal
+            //converting the amount to a number
+            //putting it in the amount variable 
             let amount = Number(prompt("How much would you like to withdrawal?", ""));
+            //withdrawals the money 
+            //call into the atm object
+            //access the current account property (which is an object of Account)
+            //access that object's withdrawal method 
+            //pass the paraemter "amount"
             atm.currentAccount.withdrawal(amount); 
+            //display the balance
             displayBalance(); 
         }
         
@@ -143,12 +167,21 @@
            
             /* clear the fields in the menu */ 
             document.getElementById("pinput").value = null; 
-            document.getElementById("newpinput").value = null;; 
+            document.getElementById("newpinput").value = null;
 
             /* hide the login and display the menu */ 
             document.getElementById("start").style.display = "none";
             document.getElementById("menu").style.display = "block";
         }
+
+        function displayChangePin(){
+            //we're going to have to update a pin on a specific account with a new pin
+            //1. get the new pin
+            //2. see if pin exists already
+            //3. if not: update the pin, otherwise don't 
+            
+        }
+
     </script>
 
 </body>
