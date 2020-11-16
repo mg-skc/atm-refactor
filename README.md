@@ -15,7 +15,7 @@ For the Final lab you will be creating a refactoring and expanding the ATM progr
 
 * For the new lab start by adding the following features: 
 
-    * Change the pin of the bank account
+    * Change the pin of the bank account (If the pin is in use, don't change it and alert the user that it's taken). 
 	* Display the date and time on all pages
 	* Display a warning about fees that must be confirmed before withdrawing or depositing money 
 
@@ -31,10 +31,5 @@ For the Final lab you will be creating a refactoring and expanding the ATM progr
 		
 	* Update the html and css to style the elements and make them pleasing to the eye 
 	* Comment each block of code and explain what it does. 
-	
-
-* You should take advantage of objects and functions to organize your ATM simulator.
-
-* The code should be well documented with comments, have good code structure, and follow naming conventions.
 
 * Push your code to your repository.
