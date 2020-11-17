@@ -15,6 +15,7 @@
         <label>New account:</label>
         <input id="newpinput"></input>
         <button onclick="newAccount()">Submit</button>
+        <p id="dateTime"></p>
     </div>
 
     <div id="menu" style="display:none"> 
@@ -29,9 +30,13 @@
 
         <button onclick="returnToMenu()">Logout</button>
 
+        <p id="dateTime1"></p>
+
     </div>
 
     <script>
+        document.getElementById("dateTime").innerHTML=Date();
+        document.getElementById("dateTime1").innerHTML=Date();
         /* When the page loads get the ATM accounts out of local storage */ 
         let atm = new Atm(); 
         atm.accounts = JSON.parse(localStorage.getItem("atm_accts")); 
@@ -59,6 +64,20 @@
                     updateATM(); 
                     return newAccount; 
             };
+
+            this.updateAccount = function(newPin){
+               // let arrAccount = atm.getAccount(atm.currentAccount.pin);
+                 //   atm.accounts[currentAcct.index].pin = pin;  
+                for (let i = 0; i < this.accounts.length; i++) {
+                    if (this.accounts[i].pin === this.currentAccount.pin) {
+                        //return the bank account that matches our pin
+                        this.currentAccount.changePin(newPin); 
+                        this.accounts[i] = this.currentAccount; 
+                        updateATM(); 
+  
+                    }
+                }
+            }
 
             this.getAccount = function (pin){
                 for (let i = 0; i < this.accounts.length; i++) {
@@ -92,7 +111,9 @@
 
             //change pin
             this.changePin = function(newPin){
-                //update this.pin
+                this.pin = newPin; 
+
+                updateATM(); 
             }
 
             //return this; 
@@ -100,6 +121,7 @@
         }
 
         function updateATM(){ 
+            console.log(atm.accounts); 
             localStorage.setItem("atm_accts",  JSON.stringify(atm.accounts) ); 
         }
 
@@ -114,6 +136,9 @@
             /* hide the menu and display the login */ 
             document.getElementById("menu").style.display = "none";
             document.getElementById("start").style.display = "block";
+
+            /*clear the current account */
+            atm.currentAccount = null; 
             
         }
 
@@ -126,22 +151,37 @@
             //get the amount to withdrawal
             //converting the amount to a number
             //putting it in the amount variable 
-            let amount = Number(prompt("How much would you like to withdrawal?", ""));
+            let amount = Number(prompt("How much would you like to withdraw?", ""));
             //withdrawals the money 
             //call into the atm object
             //access the current account property (which is an object of Account)
             //access that object's withdrawal method 
             //pass the paraemter "amount"
+
+            //**Mad's comments: I added the let and if function below to have the confirm function
+            //subtract an extra dollar for a withdrawal if they click ok, go back to menu if cancel.
+            let feeAnswer = confirm("Withdrawal fees are $1.00 per transaction - press OK to confirm.");
+            if (feeAnswer===true){
+                amount=Number(amount+1);
             atm.currentAccount.withdrawal(amount); 
             //display the balance
             displayBalance(); 
+            return;
+            } if (feeAnswer===false){ displayMenu(); }
         }
         
         function displayDeposit() {
             let amount = Number(prompt("How much would you like to deposit?", ""));
+            let feeAnswer = confirm("Deposit fees are $1.00 per transaction - press OK to confirm.");
+            if (feeAnswer===true){
+                amount=Number(amount-1);
             atm.currentAccount.deposit(amount); 
+            //display the balance
             displayBalance(); 
+            return;
+            } if (feeAnswer===false){ displayMenu(); }
         }
+
         
         function newAccount(){
                 let pin = parseInt(document.getElementById("newpinput").value);
@@ -155,10 +195,11 @@
 
         function login() {
             let pin = parseInt(document.getElementById("pinput").value);
-            atm.getAccount(pin);
-            if( atm.currentAccount === null){
+            let acct = atm.getAccount(pin);
+            if( acct === null){
                 alert("Invalid pin!"); 
             } else {
+                atm.currentAccount = acct; 
                 displayMenu(); 
             }
         }
@@ -177,9 +218,15 @@
         function displayChangePin(){
             //we're going to have to update a pin on a specific account with a new pin
             //1. get the new pin
-            //2. see if pin exists already
-            //3. if not: update the pin, otherwise don't 
-            
+            let pin = Number(prompt("Please enter your new pin.", ""));
+            //2. see if pin exists already //call our atm.getAccount(pin)
+            if(atm.getAccount(pin) === null){
+                    //change our pin in the current account 
+                    atm.updateAccount(pin); 
+                    alert("Your pin has been updated to "+pin); 
+                } else {
+                    alert("This account exists, please choose another pin!"); 
+                } 
         }
 
     </script>
