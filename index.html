@@ -187,7 +187,9 @@
 
         
         function newAccount(){
-                //let pin = parseInt(document.getElementById("newpinput").value);
+               //I added this verification section to catch any big issues with input.
+               //I had to drop the parsInt because it would recognize 2345a as 2345 and accept
+               //Number corrected that and made the errors display correctly.
                 let pin = Number(document.getElementById("newpinput").value);
                 console.log(typeof(pin));
                 if(atm.getAccount(pin) != null){
