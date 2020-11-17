@@ -172,6 +172,7 @@
         
         function displayDeposit() {
             let amount = Number(prompt("How much would you like to deposit?", ""));
+            //Mad: added code to subtract $1 fee for the deposit if confirmed.
             let feeAnswer = confirm("Deposit fees are $1.00 per transaction - press OK to confirm.");
             if (feeAnswer===true){
                 amount=Number(amount-1);
@@ -179,15 +180,36 @@
             //display the balance
             displayBalance(); 
             return;
-            } if (feeAnswer===false){ displayMenu(); }
+            } 
+            //If they don't confirm, it just keeps the menu shown.
+            if (feeAnswer===false){ displayMenu(); }
         }
 
         
         function newAccount(){
-                let pin = parseInt(document.getElementById("newpinput").value);
+                //let pin = parseInt(document.getElementById("newpinput").value);
+                let pin = Number(document.getElementById("newpinput").value);
+                console.log(typeof(pin));
                 if(atm.getAccount(pin) != null){
                     alert("This account exists!"); 
-                } else {
+                    return;
+                }if(pin>Number(10000)){
+                    alert("Please limit your PINs to 4 digits, numbers only!");
+                    return;
+                
+                }if(pin<Number(1000)){
+                    alert("Please limit your PINs to only 4 digits, numbers only!");
+                    return;
+                 
+                }if (typeof (pin)==="string"){
+                    alert("Please limit your PINs to 4 digits, numbers only!");
+                    return;
+                }
+                if (Number.isNaN(pin)){
+                    alert("Please limit your PINs to 4 digits, numbers only!");
+                    return;
+                }
+                else {
                     atm.createAccount(pin);
                     displayMenu(); 
                 } 
