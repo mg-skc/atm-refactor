@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+</head>
+
+<body>
+    
+    <div id="start"> 
+       
+        <label>Input your pin:</label>
+        <input id="pinput"></input>
+        <button onclick="login()">Submit</button>
+        <p id="account"></p>
+
+        <label>New account:</label>
+        <input id="newpinput"></input>
+        <button onclick="newAccount()">Submit</button>
+        <p id="dateTime"></p>
+    </div>
+
+    <div id="menu" style="display:none"> 
+        <button onclick="displayBalance()">Get Balance</button>
+        <p id="balance"></p>
+
+        <button onclick="displayWithrawal()">Withdrawal</button>
+
+        <button onclick="displayDeposit()">Deposit</button>
+
+        <button onclick="displayChangePin()">Change PIN</button>
+
+        <button onclick="returnToMenu()">Logout</button>
+
+        <p id="dateTime1"></p>
+
+    </div>
+
+    <script>
+        document.getElementById("dateTime").innerHTML=Date();
+        document.getElementById("dateTime1").innerHTML=Date();
+        /* When the page loads get the ATM accounts out of local storage */ 
+        let atm = new Atm(); 
+        atm.accounts = JSON.parse(localStorage.getItem("atm_accts")); 
+        /* if there are no accounts, make sure we initialize with an empty array */
+        if(atm.accounts === null){
+            atm.accounts = []; 
+        }
+
+        /*----------- the code to manipute data/ logic goes here --------*/ 
+        function Atm() {
+            this.accounts = [];
+            //[Account, Account, Account]
+            /* Account { 
+                pin : 1283
+                balance: 0
+                deposit : function
+                withdrawal : function
+             } */ 
+            this.currentAccount = null; 
+        
+            this.createAccount = function (pin){
+                    let newAccount = new Account(pin);
+                    this.accounts.push(newAccount);
+                    this.currentAccount = newAccount; 
+                    updateATM(); 
+                    return newAccount; 
+            };
+
+            this.updateAccount = function(newPin){
+               // let arrAccount = atm.getAccount(atm.currentAccount.pin);
+                 //   atm.accounts[currentAcct.index].pin = pin;  
+                for (let i = 0; i < this.accounts.length; i++) {
+                    if (this.accounts[i].pin === this.currentAccount.pin) {
+                        //return the bank account that matches our pin
+                        this.currentAccount.changePin(newPin); 
+                        this.accounts[i] = this.currentAccount; 
+                        updateATM(); 
+
+                    }
+                }
+            }
+
+            this.getAccount = function (pin){
+                for (let i = 0; i < this.accounts.length; i++) {
+                    if (this.accounts[i].pin === pin) {
+                        //return the bank account that matches our pin
+                        this.currentAccount = this.accounts[i]; 
+                        updateATM(); 
+                        return this.accounts[i];
+                    }
+                }
+                return null; 
+            }; 
+        }
+        function Account(pin) { 
+            //let this = {};
+            this.pin = pin;
+            this.balance = 0;
+            //withdrawal
+            this.withdrawal = function(wdAmount){
+                this.balance = this.balance - wdAmount; 
+                updateATM(); 
+            }
+            //deposit 
+            this.deposit = function(depAmount){
+                this.balance = this.balance + depAmount;
+                updateATM(); 
+            }
+
+            //change pin
+            this.changePin = function(newPin){
+                //update this.pin
+                this.pin = newPin; 
+
+                updateATM(); 
+            }
+
+            //return this; 
+
+        }
+
+        function updateATM(){ 
+            console.log(atm.accounts); 
+            localStorage.setItem("atm_accts",  JSON.stringify(atm.accounts) ); 
+        }
+    
+        /*-------------  UI side/display logic ------------------------*/ 
+        /*------------- The methods to manipulate UI go here ----------*/
+        
+        //display login
+        function returnToMenu(){
+            /* clear the fields in the menu */ 
+            document.getElementById("balance").innerHTML = null;
+
+            /* hide the menu and display the login */ 
+            document.getElementById("menu").style.display = "none";
+            document.getElementById("start").style.display = "block";
+            atm.currentAccount = null; 
+        }
+
+        function displayBalance() { 
+            document.getElementById("balance").innerHTML = 
+            atm.currentAccount.balance; 
+        }
+
+        function displayWithrawal() {
+            //get the amount to withdrawal
+            //converting the amount to a number
+            //putting it in the amount variable 
+            let amount = Number(prompt("How much would you like to withdrawal?", ""));
+            //withdrawals the money 
+            //call into the atm object
+            //access the current account property (which is an object of Account)
+            //access that object's withdrawal method 
+            //pass the paraemter "amount"
+            atm.currentAccount.withdrawal(amount); 
+            //display the balance
+            displayBalance(); 
+        }
+        
+        function displayDeposit() {
+            let amount = Number(prompt("How much would you like to deposit?", ""));
+            atm.currentAccount.deposit(amount); 
+            displayBalance(); 
+        }
+        
+        function displayChangePin(){
+            //we're going to have to update a pin on a specific account with a new pin
+            //1. get the new pin
+            //2. see if pin exists already
+            //3. if not: update the pin, otherwise don't 
+
+            let pin = Number(prompt("Please enter your new pin.", ""));
+            //2. see if pin exists already //call our atm.getAccount(pin)
+            if(atm.getAccount(pin) === null){
+                    //change our pin in the current account 
+                    atm.updateAccount(pin); 
+                } else {
+                    alert("This account exists, please choose another pin!"); 
+                } 
+        }
+
+        
+
+
+                    
+                
+
+        function newAccount(){
+                let pin = parseInt(document.getElementById("newpinput").value);
+                if(atm.getAccount(pin) != null){
+                    alert("This account exists!"); 
+                } else {
+                    atm.createAccount(pin);
+                    displayMenu(); 
+                } 
+            }
+            
+            function login() {
+            let pin = parseInt(document.getElementById("pinput").value);
+            atm.getAccount(pin);
+            if( atm.currentAccount === null){
+            let acct = atm.getAccount(pin);
+            if( acct === null){
+                alert("Invalid pin!"); 
+            } else {
+                atm.currentAccount = acct; 
+                console.log(currentAccount);
+                displayMenu(); 
+            }
+        }}
+        
+        
+        function displayMenu(){
+           
+            /* clear the fields in the menu */ 
+            document.getElementById("pinput").value = null; 
+            document.getElementById("newpinput").value = null;
+
+            /* hide the login and display the menu */ 
+            document.getElementById("start").style.display = "none";
+            document.getElementById("menu").style.display = "block";
+        }
+        
+        //function displayChangePin(){
+            //we're going to have to update a pin on a specific account with a new pin
+            //1. get the new pin
+            //2. see if pin exists already
+            //3. if not: update the pin, otherwise don't 
+            
+       // }
+
+    </script>
+
+</body>
+
+</html>
