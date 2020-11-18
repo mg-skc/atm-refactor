@@ -2,11 +2,32 @@
 <html>
 
 <head>
-
+    <title>Mad's ATM</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="atm-refactor.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+  
+  
 </head>
 
 <body>
-    <div id="start"> 
+    <!--The divs below are formatting the webpage-->
+    <div class="container" id="fullpage">
+        <div style="height: 100px" class="mh-100 row"></div>
+        <div class="row"></div>
+         <div class="col"></div> 
+        <div class="card border-0 shadow text-white col-4" id="card">
+          <div class="card-body p-7">
+        <div class="row">
+        </div>
+        <div class="row">
+            <div class="column-md-1"></div>
+
+    <!--Here's where the initial input menu is-->        
+    <div class="row" id="start"> 
+        <div class="column-md-1"></div>
         <label>Input your pin:</label>
         <input id="pinput"></input>
         <button onclick="login()">Submit</button>
@@ -17,7 +38,7 @@
         <button onclick="newAccount()">Submit</button>
         <p id="dateTime"></p>
     </div>
-
+    <!--Here's where main menu after login is-->  
     <div id="menu" style="display:none"> 
         <button onclick="displayBalance()">Get Balance</button>
         <p id="balance"></p>
@@ -271,12 +292,31 @@
             //1. get the new pin
             let pin = Number(prompt("Please enter your new pin.", ""));
             //2. see if pin exists already //call our atm.getAccount(pin)
-            if(atm.getAccount(pin) === null){
+            //All of the code below is searching for incorrecly formatted PINs. It also
+            //reminds the person what they changed their PIN number to.
+            if(atm.getAccount(pin) != null){
+                    alert("This account exists!"); 
+                    return;
+                }if(pin>Number(10000)){
+                    alert("Please limit your PINs to 4 digits, numbers only!");
+                    return;
+                
+                }if(pin<Number(1000)){
+                    alert("Please limit your PINs to only 4 digits, numbers only!");
+                    return;
+                 
+                }if (typeof (pin)==="string"){
+                    alert("Please limit your PINs to 4 digits, numbers only!");
+                    return;
+                }
+                if (Number.isNaN(pin)){
+                    alert("Please limit your PINs to 4 digits, numbers only!");
+                    return;
+                }
+                else {
                     //change our pin in the current account 
                     atm.updateAccount(pin); 
                     alert("Your pin has been updated to "+pin); 
-                } else {
-                    alert("This account exists, please choose another pin!"); 
                 } 
         }
 
