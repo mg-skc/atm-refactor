@@ -151,12 +151,26 @@
             //get the amount to withdrawal
             //converting the amount to a number
             //putting it in the amount variable 
-            let amount = Number(prompt("How much would you like to withdraw?", ""));
+            let amount = prompt("How much would you like to withdraw? Please make sure your amount is in denominations of $20USD.", "");
             //withdrawals the money 
             //call into the atm object
             //access the current account property (which is an object of Account)
             //access that object's withdrawal method 
             //pass the paraemter "amount"
+            console.log("type of amount "+typeof(amount));
+            console.log("amount is NaN "+isNaN(amount));
+            //The code below checks for denominations of 20 and that it is a number
+            if (amount>=0 && amount%20!=0){alert("Please keep your withdrawal amount to denominations of $20 and total withdrawal to $200.");
+            return;
+            }
+            if (amount>=0 && amount<=200 && amount%20===0){
+                  amount=Number(amount);
+                }
+                else{
+                
+                alert("Numbers only, and no more than $200 please.");
+                    return;  
+            }   
 
             //**Mad's comments: I added the let and if function below to have the confirm function
             //subtract an extra dollar for a withdrawal if they click ok, go back to menu if cancel.
@@ -171,7 +185,20 @@
         }
         
         function displayDeposit() {
-            let amount = Number(prompt("How much would you like to deposit?", ""));
+            let amount = Number(prompt("How much would you like to deposit? Please keep deposits to no more than $200USD.", ""));
+            
+            if (amount>=0 && amount%20!=0){alert("Please keep your deposit amount to denominations of $20 and total deposit to $200.");
+            return;
+            }
+            if (amount>=0 && amount<=200 && amount%20===0){
+                  amount=Number(amount);
+                }
+                else{
+                
+                alert("Numbers only, and no more than $200 please.");
+                    return;  
+
+            }    
             //Mad: added code to subtract $1 fee for the deposit if confirmed.
             let feeAnswer = confirm("Deposit fees are $1.00 per transaction - press OK to confirm.");
             if (feeAnswer===true){
