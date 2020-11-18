@@ -59,54 +59,14 @@
         document.getElementById("dateTime").innerHTML=Date();
         document.getElementById("dateTime1").innerHTML=Date();
         /* When the page loads get the ATM accounts out of local storage */ 
-       
-        
+        let atm = new Atm(); 
+        atm.accounts = JSON.parse(localStorage.getItem("atm_accts")); 
+        /* if there are no accounts, make sure we initialize with an empty array */
+        if(atm.accounts === null){
+            atm.accounts = []; 
+        }
 
         /*----------- the code to manipute data/ logic goes here --------*/ 
-        //This class stores the results of operations/actions on accounts: dep, change pin, withdraw, etc.
-        class Atm {
-            constructor(){
-                this.accounts = []; 
-                this.currentAccount = null; 
-
-            }
-        
-            createAccount(pin){
-                    let newAccount = new Account(pin);
-                    this.accounts.push(newAccount);
-                    this.currentAccount = newAccount; 
-                    updateATM(); 
-                    return newAccount; 
-            };
-
-            updateAccount(newPin){
-               // let arrAccount = atm.getAccount(atm.currentAccount.pin);
-                 //   atm.accounts[currentAcct.index].pin = pin;  
-                for (let i = 0; i < this.accounts.length; i++) {
-                    if (this.accounts[i].pin === this.currentAccount.pin) {
-                        //return the bank account that matches our pin
-                        this.currentAccount.changePin(newPin); 
-                        this.accounts[i] = this.currentAccount; 
-                        updateATM(); 
-  
-                    }
-                }
-            }
-
-            getAccount(pin){
-                for (let i = 0; i < this.accounts.length; i++) {
-                    if (this.accounts[i].pin === pin) {
-                        //return the bank account that matches our pin
-                        this.currentAccount = this.accounts[i]; 
-                        updateATM(); 
-                        return this.accounts[i];
-                    }
-                }
-                return null; 
-            }; 
-       
-        
-        /*
         function Atm() {
             this.accounts = [];
             //[Account, Account, Account]
@@ -115,7 +75,7 @@
                 balance: 0
                 deposit : function
                 withdrawal : function
-             } 
+             } */ 
             this.currentAccount = null; 
         
             this.createAccount = function (pin){
@@ -152,52 +112,8 @@
                 return null; 
             }; 
         }
-*/
-        }
 
-        let atm = new Atm(); 
-        atm.accounts = JSON.parse(localStorage.getItem("atm_accts")); 
-        /* if there are no accounts, make sure we initialize with an empty array */
-        if(atm.accounts === null){
-            atm.accounts = []; 
-        }
-//This class creates account and specifies what the operations are on account level info.
-        class Account{
-            
-            constructor(pin){
-            this.pin = pin;
-            this.balance = 0;
-            }
-         withdrawal(wdAmount){
-                this.balance = this.balance - wdAmount; 
-                updateATM(); 
-            }
-
-            //deposit 
-            deposit(depAmount){
-                this.balance = this.balance + depAmount;
-                updateATM(); 
-            }
-
-            //change pin
-            changePin(newPin){
-                this.pin = newPin; 
-
-                updateATM(); 
-            }
-
-            //return this; 
-
-        }
-
-        let account=new Account();
-
-
-
-
-
-        
-       /* function Account(pin) { 
+        function Account(pin) { 
             //let this = {};
             this.pin = pin;
             this.balance = 0;
@@ -223,13 +139,13 @@
 
             //return this; 
 
-        } */
-//this function writes account updates to the ATM class functions, etc.
+        }
+
         function updateATM(){ 
             console.log(atm.accounts); 
             localStorage.setItem("atm_accts",  JSON.stringify(atm.accounts) ); 
         }
- 
+
         /*-------------  UI side/display logic ------------------------*/ 
         /*------------- The methods to manipulate UI go here ----------*/
         
@@ -246,12 +162,12 @@
             atm.currentAccount = null; 
             
         }
-//displays current balance for existing account
+
         function displayBalance() { 
             document.getElementById("balance").innerHTML = 
             atm.currentAccount.balance; 
         }
-//enables account to withdraw
+
         function displayWithrawal() {
             //get the amount to withdrawal
             //converting the amount to a number
@@ -376,7 +292,6 @@
             //1. get the new pin
             let pin = Number(prompt("Please enter your new pin.", ""));
             //2. see if pin exists already //call our atm.getAccount(pin)
-            
             //All of the code below is searching for incorrecly formatted PINs. It also
             //reminds the person what they changed their PIN number to.
             if(atm.getAccount(pin) != null){
